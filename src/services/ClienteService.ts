@@ -126,6 +126,22 @@ class ClientService {
             });
         });
     }
+
+    // Obtem Nome Do Vendedor Do Cliente Pelo ID
+    async buscarNomeVendedorPorId(codigoVendedor: number): Promise<string | null> {
+        const sql = 'SELECT NOME FROM Vendedores WHERE ID = ?';
+        return new Promise((resolve, reject) => {
+            conexao.query(sql, [codigoVendedor], (err, results) => {
+                if (err) {
+                    return reject(err);
+                }
+                if (results.length === 0) {
+                    return resolve(null);
+                }
+                resolve(results[0].NOME);
+            });
+        });
+    }
 }
 
 export default new ClientService();

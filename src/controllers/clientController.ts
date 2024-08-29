@@ -61,3 +61,19 @@ export const deleteClient = async (req: Request, res: Response) => {
         res.status(500).json({ message: `Erro ao deletar cliente com ID: ${id}`, error: err.message });
     }
 };
+
+
+// Função para obter o nome do vendedor pelo código
+export const getVendedorNomeById = async (req: Request, res: Response) => {
+    const { codigoVendedor } = req.params;
+    try {
+        const nomeVendedor = await ClientService.buscarNomeVendedorPorId(Number(codigoVendedor));
+        if (!nomeVendedor) {
+            return res.status(404).json({ message: 'Vendedor não encontrado' });
+        }
+        res.status(200).json({ nome: nomeVendedor });
+    } catch (error) {
+        const err = error as Error;
+        res.status(500).json({ message: 'Erro ao buscar o nome do vendedor', error: err.message });
+    }
+};
