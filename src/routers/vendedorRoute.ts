@@ -20,9 +20,9 @@ router.get('/getAll', authenticateToken, getAllVendedores);
 router.get('/getbyid/:id', authenticateToken, getVendedorById);
 
 // Rota para atualizar um vendedor
-router.put('/:id', authenticateToken, updateVendedor);
+router.put('/update/:id', authenticateToken, updateVendedor);
 
 // Rota para deletar um vendedor
-router.delete('/:id', authenticateToken, deleteVendedor);
+router.delete('/delete/:id', authenticateToken, deleteVendedor);
 
 export default router;
