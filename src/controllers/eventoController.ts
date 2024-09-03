@@ -69,6 +69,18 @@ export const getEventosByMonthAndYear = async (req: Request, res: Response) => {
     }
 };
 
+// Busca Boletos que Venceram nos proximos 5 dias
+export const getNextFiveEvent = async (req: Request, res: Response) => {
+    try {
+        const eventos = await EventoService.buscarProximosCincoDias();
+        res.json(eventos);
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+        console.error('Erro ao buscar eventos dos próximos 5 dias:', errorMessage);
+        res.status(500).json({ message: 'Erro ao buscar eventos dos próximos 5 dias', error: errorMessage });
+    }
+};
+
 // Buscar evento por ID
 export const getEventoById = async (req: Request, res: Response) => {
     try {

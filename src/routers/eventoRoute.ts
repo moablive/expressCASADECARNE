@@ -6,7 +6,8 @@ import {
     deleteEvento, 
     marcarEventoComoPago, 
     marcarEventoComoNaoPago,
-    getEventosByMonthAndYear 
+    getEventosByMonthAndYear,
+    getNextFiveEvent
 } from '../controllers/eventoController';
 import { authenticateToken } from '../authMiddleware/authMiddleware';
 
@@ -15,6 +16,7 @@ const router = Router();
 // Rotas protegidas por autenticação JWT
 router.get('/getAll', authenticateToken, getAllEventos); // Buscar todos os eventos
 router.get('/list/mes/:month/:year', authenticateToken, getEventosByMonthAndYear); // Buscar eventos por mês e ano
+router.get('/nextFive', authenticateToken, getNextFiveEvent); // Buscar eventos próximos 5 dias
 router.get('/getbyid/:id', authenticateToken, getEventoById); // Buscar um evento por ID
 router.put('/update/:id', authenticateToken, updateEvento); // Atualizar um evento
 router.delete('/delete/:id', authenticateToken, deleteEvento); // Deletar um evento
