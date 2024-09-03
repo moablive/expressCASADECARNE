@@ -27,12 +27,28 @@ class EventoService {
       });
     });
   }
-  
+
   // Buscar todos os eventos
   async buscarTodos(): Promise<Evento[]> {
     const sql = "SELECT * FROM Evento";
     return new Promise((resolve, reject) => {
       conexao.query(sql, (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(results);
+      });
+    });
+  }
+
+  // Buscar eventos por mês e ano
+  async buscarPorMes(mes: number, ano: number): Promise<Evento[]> {
+    const sql = `
+        SELECT * FROM Evento 
+        WHERE MONTH(DataEmissao) = ? AND YEAR(DataEmissao) = ?
+    `;
+    return new Promise((resolve, reject) => {
+      conexao.query(sql, [mes, ano], (err, results) => {
         if (err) {
           return reject(err);
         }

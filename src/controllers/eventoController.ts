@@ -56,6 +56,19 @@ export const getAllEventos = async (req: Request, res: Response) => {
     }
 };
 
+// Buscar eventos por mês e ano
+export const getEventosByMonthAndYear = async (req: Request, res: Response) => {
+    try {
+        const { month, year } = req.params;
+        const eventos = await EventoService.buscarPorMes(Number(month), Number(year));
+        res.json(eventos);
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+        console.error('Erro ao buscar eventos por mês e ano:', errorMessage);
+        res.status(500).json({ message: 'Erro ao buscar eventos por mês e ano', error: errorMessage });
+    }
+};
+
 // Buscar evento por ID
 export const getEventoById = async (req: Request, res: Response) => {
     try {
