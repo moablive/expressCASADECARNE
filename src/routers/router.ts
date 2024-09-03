@@ -1,8 +1,11 @@
 import { Express } from 'express';
 import { authenticateToken } from '../authMiddleware/authMiddleware';
+
+// Rotas
 import userRoute from './userRoute';
 import clientRoute from './clientRoute';
 import vededorRoute from './vendedorRoute';
+import eventoRoute from './eventoRoute';
 
 export default (app: Express) => {
 
@@ -19,4 +22,7 @@ export default (app: Express) => {
 
     // Rotas de Vendedor
     app.use('/api/vendedor', authenticateToken, vededorRoute);
+
+    // Rotas de Evento
+    app.use('/api/eventos', authenticateToken, eventoRoute);
 };
