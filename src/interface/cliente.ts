@@ -15,4 +15,6 @@ export interface Cliente {
     COMPLEMENTO?: string | null;
     CEP?: string | null;
     NOME_VENDEDOR?: string | null;
+    LATITUDE?: number | null;
+    LONGITUDE?: number | null;
 }

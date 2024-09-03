@@ -3,7 +3,6 @@ import { Cliente } from '../interface/cliente';
 import conexao from '../db/conexao';
 
 class ClientService {
-
     // Criar um novo cliente
     async criar(cliente: Cliente): Promise<Cliente> {
         const {
@@ -20,7 +19,9 @@ class ClientService {
             RUA_AV,
             NUMERO,
             COMPLEMENTO,
-            CEP
+            CEP,
+            LATITUDE,
+            LONGITUDE
         } = cliente;
 
         const sql = `INSERT INTO Clientes (
@@ -37,8 +38,10 @@ class ClientService {
             RUA_AV,
             NUMERO,
             COMPLEMENTO,
-            CEP
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            CEP,
+            LATITUDE,
+            LONGITUDE
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
         return new Promise((resolve, reject) => {
             conexao.query(
@@ -57,7 +60,9 @@ class ClientService {
                     RUA_AV,
                     NUMERO,
                     COMPLEMENTO,
-                    CEP
+                    CEP,
+                    LATITUDE,
+                    LONGITUDE
                 ],
                 (err, results) => {
                     if (err) {
@@ -69,6 +74,19 @@ class ClientService {
                     });
                 }
             );
+        });
+    }
+
+    // Atualizar um cliente
+    async atualizar(id: number, dadosAtualizados: Partial<Cliente>): Promise<void> {
+        const sql = 'UPDATE Clientes SET ? WHERE ID = ?';
+        return new Promise((resolve, reject) => {
+            conexao.query(sql, [dadosAtualizados, id], (err) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve();
+            });
         });
     }
 
@@ -101,19 +119,6 @@ class ClientService {
         });
     }
 
-    // Atualizar um cliente
-    async atualizar(id: number, dadosAtualizados: Partial<Cliente>): Promise<void> {
-        const sql = 'UPDATE Clientes SET ? WHERE ID = ?';
-        return new Promise((resolve, reject) => {
-            conexao.query(sql, [dadosAtualizados, id], (err) => {
-                if (err) {
-                    return reject(err);
-                }
-                resolve();
-            });
-        });
-    }
-
     // Deletar um cliente
     async deletar(id: number): Promise<void> {
         const sql = 'DELETE FROM Clientes WHERE ID = ?';
@@ -127,7 +132,7 @@ class ClientService {
         });
     }
 
-    // Obtem Nome Do Vendedor Do Cliente Pelo ID
+    // Obter Nome Do Vendedor Do Cliente Pelo ID
     async buscarNomeVendedorPorId(codigoVendedor: number): Promise<string | null> {
         const sql = 'SELECT NOME FROM Vendedores WHERE ID = ?';
         return new Promise((resolve, reject) => {
