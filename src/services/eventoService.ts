@@ -58,7 +58,7 @@ class EventoService {
   }
 
   // Busca eventos que vencem nos próximos 5 dias
-  async buscarProximosCincoDias(): Promise<Evento[]> {
+  async buscaProximosVencimentos(): Promise<Evento[]> {
     const sql = `SELECT * FROM Evento WHERE DataVencimento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 5 DAY);`;
     return new Promise((resolve, reject) => {
       conexao.query(sql, (err, results) => {

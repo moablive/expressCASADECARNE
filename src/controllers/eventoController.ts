@@ -70,9 +70,9 @@ export const getEventosByMonthAndYear = async (req: Request, res: Response) => {
 };
 
 // Busca Boletos que Venceram nos proximos 5 dias
-export const getNextFiveEvent = async (req: Request, res: Response) => {
+export const getNextExpiration  = async (req: Request, res: Response) => {
     try {
-        const eventos = await EventoService.buscarProximosCincoDias();
+        const eventos = await EventoService.buscaProximosVencimentos();
         res.json(eventos);
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
