@@ -5,7 +5,8 @@ import {
     getAllVendedores,
     getVendedorById,
     updateVendedor,
-    deleteVendedor
+    deleteVendedor,
+    getVendasPorVendedor
 } from '../controllers/vendedorController';
 
 const router = Router();
@@ -18,6 +19,9 @@ router.get('/getAll', authenticateToken, getAllVendedores);
 
 // Rota para buscar um vendedor por ID
 router.get('/getbyid/:id', authenticateToken, getVendedorById);
+
+// Rota para buscar as vendas por vendedor
+router.get('/vendas', authenticateToken, getVendasPorVendedor);
 
 // Rota para atualizar um vendedor
 router.put('/update/:id', authenticateToken, updateVendedor);

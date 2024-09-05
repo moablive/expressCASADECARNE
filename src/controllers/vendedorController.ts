@@ -47,6 +47,18 @@ export const getVendedorById = async (req: Request, res: Response) => {
     }
 };
 
+// Buscar vendas por vendedor
+export const getVendasPorVendedor = async (req: Request, res: Response) => {
+    try {
+        const vendas = await VendedorService.buscarVendasPorVendedor();
+        res.json(vendas);
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+        console.error('Erro ao buscar vendas por vendedor:', errorMessage);
+        res.status(500).json({ message: 'Erro ao buscar vendas por vendedor', error: errorMessage });
+    }
+};
+
 // Atualizar um vendedor
 export const updateVendedor = async (req: Request, res: Response) => {
     try {

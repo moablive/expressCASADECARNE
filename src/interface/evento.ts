@@ -10,4 +10,6 @@ export interface Evento {
     Endereco?: string | null;
     status_pagamento?: string | null;
     CODIGO_VENDEDOR?: number | null;
+    NOME_VENDEDOR?: string | null;
+    ValorNF?: number | null;
 }
