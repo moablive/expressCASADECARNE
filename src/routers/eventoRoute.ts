@@ -7,7 +7,9 @@ import {
     marcarEventoComoPago, 
     marcarEventoComoNaoPago,
     getEventosByMonthAndYear,
-    getNextExpiration
+    getNextExpiration,
+    getAllPaidEvents,
+    getallunpaidEvents
 } from '../controllers/eventoController';
 import { authenticateToken } from '../authMiddleware/authMiddleware';
 
@@ -15,6 +17,8 @@ const router = Router();
 
 // Rotas protegidas por autenticação JWT
 router.get('/getAll', authenticateToken, getAllEventos); // Buscar todos os eventos
+router.get('/getAll/paidEvents', authenticateToken, getAllPaidEvents); // Buscar todos os eventos Pagos
+router.get('/getAll/unpaidEvents', authenticateToken, getallunpaidEvents); // Buscar todos os eventos nao Pagos
 router.get('/list/mes/:month/:year', authenticateToken, getEventosByMonthAndYear); // Buscar eventos por mês e ano
 router.get('/getNextExpiration', authenticateToken, getNextExpiration); // Busca eventos que vencem nos próximos 5 dias
 router.get('/getbyid/:id', authenticateToken, getEventoById); // Buscar um evento por ID

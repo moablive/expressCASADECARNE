@@ -86,6 +86,42 @@ class EventoService {
     });
   }
 
+  // Serviço para buscar todos os eventos pagos
+  async buscarEventosPagos(): Promise<Evento[] | null> {
+    const sql = "SELECT * FROM Evento WHERE status_pagamento = 'pago'";
+    return new Promise((resolve, reject) => {
+      conexao.query(sql, (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+
+        if (results.length === 0) {
+          return resolve(null);
+        }
+
+        resolve(results);
+      });
+    });
+  }
+
+  // Serviço para buscar todos os eventos não pagos
+  async buscarEventosNaoPagos(): Promise<Evento[] | null> {
+    const sql = "SELECT * FROM Evento WHERE status_pagamento = 'não pago'";
+    return new Promise((resolve, reject) => {
+      conexao.query(sql, (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+
+        if (results.length === 0) {
+          return resolve(null);
+        }
+
+        resolve(results);
+      });
+    });
+  }
+
   // Atualizar um evento
   async atualizar(
     id: number,
