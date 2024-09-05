@@ -14,6 +14,6 @@ router.put('/:id', authenticateToken, updateClient); // Atualizar um cliente
 router.delete('/:id', authenticateToken, deleteClient); // Deletar um cliente
 
 // Rota para obter o nome do vendedor pelo código
-router.get('/vendedor/:codigoVendedor', authenticateToken, getVendedorNomeById);
+router.get('/vendedor/:id', authenticateToken, getVendedorNomeById);
 
 export default router;

@@ -63,17 +63,21 @@ export const deleteClient = async (req: Request, res: Response) => {
 };
 
 
-// Função para obter o nome do vendedor pelo código
+// Função para buscar o nome do vendedor pelo código do vendedor
 export const getVendedorNomeById = async (req: Request, res: Response) => {
-    const { codigoVendedor } = req.params;
     try {
-        const nomeVendedor = await ClientService.buscarNomeVendedorPorId(Number(codigoVendedor));
+        const { id } = req.params;
+
+        // Busca o nome do vendedor pelo código
+        const nomeVendedor = await ClientService.buscarNomeVendedorPorId(Number(id));
+
         if (!nomeVendedor) {
             return res.status(404).json({ message: 'Vendedor não encontrado' });
         }
+
         res.status(200).json({ nome: nomeVendedor });
     } catch (error) {
-        const err = error as Error;
-        res.status(500).json({ message: 'Erro ao buscar o nome do vendedor', error: err.message });
+        console.error('Erro ao buscar nome do vendedor:', error);
+        res.status(500).json({ message: 'Erro ao buscar nome do vendedor' });
     }
 };
