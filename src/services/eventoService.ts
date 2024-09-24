@@ -2,11 +2,12 @@ import conexao from "../db/conexao";
 import { Evento } from "../interface/evento";
 
 class EventoService {
-  // Atualizar o status de pagamento para "pago"
-  async marcarComoPago(id: number): Promise<void> {
-    const sql = "UPDATE Evento SET status_pagamento = ? WHERE Id = ?";
+  // Marcar um Evento como "pago" com comprovante
+  async marcarComoPago(id: number, comprovanteBase64: string): Promise<void> {
+    const sql =
+      "UPDATE Evento SET status_pagamento = ?, ComprovanteBase64 = ? WHERE Id = ?";
     return new Promise((resolve, reject) => {
-      conexao.query(sql, ["pago", id], (err) => {
+      conexao.query(sql, ["pago", comprovanteBase64, id], (err) => {
         if (err) {
           return reject(err);
         }
@@ -15,9 +16,10 @@ class EventoService {
     });
   }
 
-  // Atualizar o status de pagamento para "não pago"
+  // Atualizar o status de pagamento para "não pago" e remover comprovante
   async marcarComoNaoPago(id: number): Promise<void> {
-    const sql = "UPDATE Evento SET status_pagamento = ? WHERE Id = ?";
+    const sql =
+      "UPDATE Evento SET status_pagamento = ?, ComprovanteBase64 = NULL WHERE Id = ?";
     return new Promise((resolve, reject) => {
       conexao.query(sql, ["não pago", id], (err) => {
         if (err) {
@@ -28,6 +30,7 @@ class EventoService {
     });
   }
 
+  
   // Buscar todos os eventos com o nome do vendedor
   async buscarTodos(): Promise<Evento[]> {
     const sql = `
@@ -108,8 +111,7 @@ class EventoService {
       SELECT e.*, v.NOME AS NOME_VENDEDOR
       FROM Evento e
       LEFT JOIN Vendedores v ON e.CODIGO_VENDEDOR = v.ID
-      WHERE e.status_pagamento = 'pago'
-    `;
+      WHERE e.status_pagamento = 'pago'`;
     return new Promise((resolve, reject) => {
       conexao.query(sql, (err, results) => {
         if (err) {
@@ -139,7 +141,10 @@ class EventoService {
   }
 
   // Atualizar um evento
-  async atualizar(id: number, dadosAtualizados: Partial<Evento>): Promise<void> {
+  async atualizar(
+    id: number,
+    dadosAtualizados: Partial<Evento>
+  ): Promise<void> {
     const sql = "UPDATE Evento SET ? WHERE Id = ?";
     return new Promise((resolve, reject) => {
       conexao.query(sql, [dadosAtualizados, id], (err) => {

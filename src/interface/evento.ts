@@ -12,4 +12,5 @@ export interface Evento {
     CODIGO_VENDEDOR?: number | null;
     NOME_VENDEDOR?: string | null;
     ValorNF?: number | null;
+    ComprovanteBase64?: string | null;
 }

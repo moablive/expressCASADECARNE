@@ -2,19 +2,24 @@ import { Request, Response } from "express";
 import EventoService from "../services/eventoService";
 import { Evento } from "../interface/evento";
 
-// Marcar um evento como "pago"
+// Marcar um Evento como "pago" com comprovante
 export const marcarEventoComoPago = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const { comprovanteBase64 } = req.body;
 
-    // Verifica se o evento existe
+    if (!comprovanteBase64) {
+      return res
+        .status(400)
+        .json({ message: "Comprovante é obrigatório para marcar como pago" });
+    }
+
     const eventoExistente = await EventoService.buscarPorId(Number(id));
     if (!eventoExistente) {
       return res.status(404).json({ message: "Evento não encontrado" });
     }
 
-    // Marca como pago
-    await EventoService.marcarComoPago(Number(id));
+    await EventoService.marcarComoPago(Number(id), comprovanteBase64);
     res.status(200).json({ message: "Evento marcado como pago com sucesso" });
   } catch (error) {
     const errorMessage =
@@ -51,6 +56,41 @@ export const marcarEventoComoNaoPago = async (req: Request, res: Response) => {
       message: "Erro ao marcar evento como não pago",
       error: errorMessage,
     });
+  }
+};
+
+// Função para download do comprovante
+export const downloadComprovante = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    // Buscar o evento pelo ID
+    const evento = await EventoService.buscarPorId(Number(id));
+
+    if (!evento || !evento.ComprovanteBase64) {
+      return res.status(404).json({ message: "Comprovante não encontrado" });
+    }
+
+    // Remover qualquer prefixo como 'data:application/pdf;base64,' que possa estar na string Base64
+    const base64Data = evento.ComprovanteBase64.replace(/^data:application\/pdf;base64,/, '');
+
+    // Converter o Base64 para Buffer
+    const buffer = Buffer.from(base64Data, "base64");
+
+    // Definir os headers para o download correto do arquivo
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=comprovante_${evento.NumeroNF}.pdf`
+    );
+
+    // Enviar o arquivo em forma de buffer
+    res.send(buffer);
+  } catch (error) {
+    console.error("Erro ao realizar download do comprovante:", error);
+    res
+      .status(500)
+      .json({ message: "Erro ao realizar download do comprovante" });
   }
 };
 
@@ -128,26 +168,33 @@ export const getEventoById = async (req: Request, res: Response) => {
 
 // Busca Todos os Eventos Pagos
 export const getAllPaidEvents = async (req: Request, res: Response) => {
-    try {
-        const paidEvents = await EventoService.buscarEventosPagos();
-        res.json(paidEvents);
-    } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
-        console.error("Erro ao buscar eventos pagos:", errorMessage);
-        res.status(500).json({ message: "Erro ao buscar eventos pagos", error: errorMessage });
-    }
+  try {
+    const paidEvents = await EventoService.buscarEventosPagos();
+    res.json(paidEvents);
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Erro desconhecido";
+    console.error("Erro ao buscar eventos pagos:", errorMessage);
+    res
+      .status(500)
+      .json({ message: "Erro ao buscar eventos pagos", error: errorMessage });
+  }
 };
 
 // Busca Todos os Eventos não pagos
 export const getallunpaidEvents = async (req: Request, res: Response) => {
-    try {
-        const unpaidEvents = await EventoService.buscarEventosNaoPagos();
-        res.json(unpaidEvents);
-    } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
-        console.error("Erro ao buscar eventos não pagos:", errorMessage);
-        res.status(500).json({ message: "Erro ao buscar eventos não pagos", error: errorMessage });
-    }
+  try {
+    const unpaidEvents = await EventoService.buscarEventosNaoPagos();
+    res.json(unpaidEvents);
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Erro desconhecido";
+    console.error("Erro ao buscar eventos não pagos:", errorMessage);
+    res.status(500).json({
+      message: "Erro ao buscar eventos não pagos",
+      error: errorMessage,
+    });
+  }
 };
 
 // Atualizar um evento

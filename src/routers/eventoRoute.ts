@@ -6,6 +6,7 @@ import {
     deleteEvento, 
     marcarEventoComoPago, 
     marcarEventoComoNaoPago,
+    downloadComprovante,
     getEventosByMonthAndYear,
     getNextExpiration,
     getAllPaidEvents,
@@ -28,5 +29,8 @@ router.delete('/delete/:id', authenticateToken, deleteEvento); // Deletar um eve
 // Rotas específicas para marcar eventos como "pago" ou "não pago"
 router.put('/marcarComoPago/:id', authenticateToken, marcarEventoComoPago); // Marcar evento como pago
 router.put('/marcarComoNaoPago/:id', authenticateToken, marcarEventoComoNaoPago); // Marcar evento como não pago
+
+// Rota para download do comprovante
+router.get('/downloadComprovante/:id', authenticateToken, downloadComprovante);
 
 export default router;
