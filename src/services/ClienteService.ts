@@ -152,6 +152,83 @@ class ClientService {
       });
     });
   }
+
+  // STATUS 🗺️
+  // STEP 1: Método para obter contagens e valores totais
+  async obterTotaisPorCNPJ(
+    cnpj: string
+  ): Promise<{
+    eventos_pagos: number;
+    eventos_nao_pagos: number;
+    total_pagos: number;
+    total_nao_pagos: number;
+  }> {
+    const sqlTotals = `
+    SELECT 
+      COUNT(CASE WHEN Evento.status_pagamento = 'pago' THEN 1 END) AS eventos_pagos,
+      COUNT(CASE WHEN Evento.status_pagamento = 'não pago' THEN 1 END) AS eventos_nao_pagos,
+      SUM(CASE WHEN Evento.status_pagamento = 'pago' THEN Evento.ValorNF ELSE 0 END) AS total_pagos,
+      SUM(CASE WHEN Evento.status_pagamento = 'não pago' THEN Evento.ValorNF ELSE 0 END) AS total_nao_pagos
+    FROM Evento
+    WHERE Evento.CNPJ = ?
+  `;
+
+    return new Promise((resolve, reject) => {
+      conexao.query(sqlTotals, [cnpj], (err, results) => {
+        if (err) return reject(err);
+        const totals = results[0];
+        resolve({
+          eventos_pagos: totals.eventos_pagos || 0,
+          eventos_nao_pagos: totals.eventos_nao_pagos || 0,
+          total_pagos: totals.total_pagos || 0,
+          total_nao_pagos: totals.total_nao_pagos || 0,
+        });
+      });
+    });
+  }
+
+  // STATUS 🗺️
+  // STEP 2: Método para obter números de NF e valores
+  async obterNFsPorCNPJ(
+    cnpj: string
+  ): Promise<{
+    nfs_pagos: { numero_nf: string; valor_nf: number; status_pagamento: string }[];
+    nfs_nao_pagos: { numero_nf: string; valor_nf: number; status_pagamento: string }[];
+  }> {
+    const sqlNFs = `
+      SELECT 
+        Evento.NumeroNF AS numero_nf, 
+        Evento.ValorNF AS valor_nf, 
+        Evento.status_pagamento
+      FROM Evento
+      WHERE Evento.CNPJ = ?
+    `;
+
+    return new Promise((resolve, reject) => {
+      conexao.query(sqlNFs, [cnpj], (err, results) => {
+        if (err) return reject(err);
+        const nfs = results;
+        const nfs_pagos = nfs
+          .filter((nf: any) => nf.status_pagamento === "pago")
+          .map((nf: any) => ({
+            numero_nf: nf.numero_nf,
+            valor_nf: nf.valor_nf,
+            status_pagamento: "pago",
+          }));
+
+        const nfs_nao_pagos = nfs
+          .filter((nf: any) => nf.status_pagamento === "não pago")
+          .map((nf: any) => ({
+            numero_nf: nf.numero_nf,
+            valor_nf: nf.valor_nf,
+            status_pagamento: "não pago",
+          }));
+
+        resolve({ nfs_pagos, nfs_nao_pagos });
+      });
+    });
+  }
+
 }
 
 export default new ClientService();
