@@ -22,6 +22,7 @@ class ClientService {
       CEP,
       LATITUDE,
       LONGITUDE,
+      APELIDO,
     } = cliente;
 
     const sql = `INSERT INTO Clientes (
@@ -40,8 +41,9 @@ class ClientService {
             COMPLEMENTO,
             CEP,
             LATITUDE,
-            LONGITUDE
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            LONGITUDE,
+            APELIDO
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     return new Promise((resolve, reject) => {
       conexao.query(
@@ -63,6 +65,7 @@ class ClientService {
           CEP,
           LATITUDE,
           LONGITUDE,
+          APELIDO,
         ],
         (err, results) => {
           if (err) {
@@ -76,7 +79,7 @@ class ClientService {
       );
     });
   }
-
+  
   // Atualizar um cliente
   async atualizar(
     id: number,

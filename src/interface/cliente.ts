@@ -17,4 +17,5 @@ export interface Cliente {
   NOME_VENDEDOR?: string | null;
   LATITUDE?: number | null;
   LONGITUDE?: number | null;
+  APELIDO?: string | null;
 }
